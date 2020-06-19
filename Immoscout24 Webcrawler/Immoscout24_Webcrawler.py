@@ -85,10 +85,14 @@ for URL in URLS:
         address_2 = ''
     address = (address_1 + address_2).strip()
 
-    rooms = int(page_soup.find('div',{'class':'is24qa-zi is24-value font-semibold'}).text.strip())
-
-    sqm = float(page_soup.find('div',{'class':'is24qa-flaeche is24-value font-semibold'})    .text.strip()    .replace(',','.')    .split(' ')    [0])
-
+    try:
+        rooms = int(page_soup.find('div',{'class':'is24qa-zi is24-value font-semibold'}).text.strip())
+    except:
+        rooms = ''
+    try:
+        sqm = float(page_soup.find('div',{'class':'is24qa-flaeche is24-value font-semibold'})    .text.strip()    .replace(',','.')    .split(' ')    [0])
+    except:
+        sqm = None
     try:
         move_in_date = page_soup.find('dd',{'class':'is24qa-bezugsfrei-ab grid-item three-fifths'}).text.strip()
     except:
@@ -102,8 +106,10 @@ for URL in URLS:
         price_warm = float(page_soup.find('dd',{'class':'is24qa-gesamtmiete grid-item three-fifths font-bold'})        .text.strip()        .replace('.','')        .split(' ')        [0])
     except:
         price_warm = 0
-
-    pps = (price_warm)/float(sqm)
+    try:
+        pps = (price_warm)/float(sqm)
+    except:
+        pps = None
     
     # create row to update in gsheets
     insert_row = [flat_name, sqm, rooms, floor, price_warm, address, URL, '', '', '','','','','',pps, move_in_date]
@@ -114,25 +120,6 @@ for URL in URLS:
     sheet.insert_row(insert_row,len(data) + 2)
 
 
-# In[179]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[155]:
-
-
-
-
-
-# In[ ]:
 
 
 
